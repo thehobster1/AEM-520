@@ -7,11 +7,11 @@ using namespace std;
 
 
 double DDx(double *, double *, int *);
-double DDx4(double*, double*,int*);
-double DDx6(double*, double*,int*);
-double DDx_2(double*, double*,int*);
-double DDx4_2(double*, double*,int*);
-double DDx6_2(double*, double*,int*);
+double DDx4(double*, double*, int*);
+double DDx6(double*, double*, int*);
+double DDx_2(double*, double*, int*);
+double DDx4_2(double*, double*, int*);
+double DDx6_2(double*, double*, int*);
 void writeval(double*,double*,double*,double*,const int*);
 void writevalmed(double*,double*,double*,double*,const int*);
 void writevallarge(double*,double*,double*,double*,const int*);
@@ -19,7 +19,7 @@ void create(string,double*,double*,int);
 
 int main()
 {
- 	const double x_low = 0,x_high = 6.283;
+	const double x_low = 0,x_high = 6.283;
 	int i,order;
 	int n_sm = 10,n_med = 100,n_lg = 1000,gc = 0,sz_small = n_sm + 2*gc,sz_med = n_med + 2*gc,sz_large = n_lg + 2*gc;
 	double domain_step, domain, nodes, dx_sm,dx_med,dx_lg, x_sm[n_sm + 2*gc] = {0},x_med[n_med + 2*gc] = {0},x_lg[n_lg + 2*gc] = {0},derivative[n_sm + 2*gc] = {0},derivative_2[n_sm + 2*gc] = {0};
@@ -44,7 +44,7 @@ int main()
 	x_lg[i] = x_low - gc*dx_lg + i*dx_lg;
 	}
 
-    // Analytical
+    	// Analytical
 	for ( i = 1; i < n_sm + 2*gc; i++){
 		Asin_sm[i] = sin(x_sm[i]);
 		Acos_sm[i] = cos(x_sm[i]);
@@ -60,8 +60,8 @@ int main()
 		Acos_lg[i] = cos(x_lg[i]);
 	}
 	
-    // For 10 nodes
-    for ( i = 1; i < n_sm + 2*gc; i++) {
+    	// For 10 nodes
+    	for ( i = 1; i < n_sm + 2*gc; i++) {
 		derivative[i] = DDx(&*Asin_sm,&dx_sm,&i);
 		derivative_2[i] = DDx_2(&*Asin_sm,&dx_sm,&i);
 		derivative4_s[i] = DDx4(&*Asin_sm,&dx_sm,&i);
@@ -86,8 +86,8 @@ int main()
 	create(F,x_sm,derivative6_2_s,sz_small);
 
 
-    // Fourth Order
-    for ( i = 1; i < n_med + 2*gc; i++) {
+    	// Fourth Order
+    	for ( i = 1; i < n_med + 2*gc; i++) {
 		derivative4[i] = DDx4(&*Asin_med,&dx_med,&i);
 		derivative4_2[i] = DDx4_2(&*Asin_med,&dx_med,&i);
 		errmedd1[i] = derivative4[i] - Acos_med[i];		
@@ -105,7 +105,7 @@ int main()
 
 
 
-    // Sixth Order
+    	// Sixth Order
 	for ( i = 1; i < n_lg + 2*gc; i++) {
 		derivative6[i] = DDx6(&*Asin_lg,&dx_lg,&i);
 		derivative6_2[i] = DDx6_2(&*Asin_lg,&dx_lg,&i);	
