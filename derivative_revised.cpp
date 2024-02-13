@@ -14,12 +14,12 @@ vector<double> fill_gc(vector<double>, int,int);
 int main()
 {
  	const double x_low = 0,x_high = 6.28318531;
-	int i,order = 6;
+	int i,order = 2;
 	int n = 10, gc = order/2;
 	double dx;	
 	vector<double> Acos(n + 2*gc),x(n + 2*gc),Asin(n + 2*gc),derivative(n + 2*gc);
 	
-	dx = (x_high - x_low)/n;
+	dx = (x_high - x_low)/(n-1);
 	// create domains
 	for ( i = 0; i < n + 2*gc; i++) {
 		x[i] = x_low - gc*dx + i*dx;
@@ -29,16 +29,17 @@ int main()
     // Analytical
 	for ( i = 0; i < n + 2*gc; i++){ 
 		Asin[i] = sin(x[i]);
-		// cout << Asin[i] << "  " << x[i] << endl;
+		cout << Asin[i] << "  " << x[i] << endl;
 		Acos[i] = cos(x[i]);
 	}
 	
 	derivative = DDx(Asin,&dx,&gc,&n,order);
 
 	derivative = fill_gc(derivative,gc,n);
-	// for ( i = 0; i < n + 2*gc; i++) {
-	// 	cout << derivative[i] << "  " << x[i] << endl;
-	// }
+	cout << "---------------" << endl;
+	for ( i = 0; i < n + 2*gc; i++) {
+		cout << derivative[i] << "  " << x[i] << endl;
+	}
 	
 	return 0;
 	
@@ -108,13 +109,13 @@ vector<double> fill_gc(vector<double> A, int gc,int n){
 	
 	int sz = n + 2*gc;
 	for(int i = 0; i < gc; i++){
-		A[i] = A[sz - 2*gc - i];
+		A[i] = A[sz - gc - i];
 		//cout << A[i] << "   " << i << endl;
 	//	A[sz - i] = A[2*gc - i];
 	}	 
 	
 	for(int j = sz; j > sz - gc; j--){
-		A[j] = A[j - 2*gc];
+		A[j] = A[j - gc];
 		//cout << A[j] << "    " << j << endl;
 	}	 
 
