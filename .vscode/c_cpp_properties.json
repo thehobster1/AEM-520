@@ -4,7 +4,9 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:\\Program Files\\MATLAB\\R2019b\\extern\\include/**"
+                "C:\\msys64\\ucrt64\\include",
+                "C:/msys64/ucrt64/include/matplotlib-cpp-master/**",
+                "C:/msys64/mingw64/include/python3.11/**"
             ],
             "defines": [
                 "_DEBUG",

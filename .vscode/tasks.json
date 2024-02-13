@@ -11,9 +11,10 @@
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
                 "-I",
-                "C:\\Program Files\\MATLAB\\R2019b\\extern\\include",
+                "C:\\msys64\\mingw64\\include\\python3.11",
                 "-L",
                 "C:\\Program Files\\MATLAB\\R2019b\\extern\\bin\\win64"
+                
             ],
             "options": {
                 "cwd": "${fileDirname}"

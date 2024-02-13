@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include "matplotlibcpp.h"
 using namespace std;
 
 
