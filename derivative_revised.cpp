@@ -21,31 +21,108 @@ int main()
 	double dx;	
 	vector<double> Acos(n + 2*gc),x(n + 2*gc),Asin(n + 2*gc),derivative(n + 2*gc),double_derivative(n + 2*gc),double_derivative_conservative(n + 2*gc),N_Asin(n + 2*gc);
 	vector<double> err_d(n + 2*gc), err_dd(n + 2*gc), err_ddc(n + 2*gc);
-	string A = "der_1_2_10.csv";
-	string B = "der_2_2_10.csv";
-	string C = "der_1_4_10.csv";
-	string D = "der_2_4_10.csv";
-	string E = "der_1_6_10.csv";
-	string F = "der_2_6_10.csv";
-	string G = "der_1_2_err_10.csv";
-	string H = "der_2_2_err_10.csv";
-	string I = "der_1_4_err_10.csv";
-	string J = "der_2_4_err_10.csv";
-	string K = "der_1_6_err_10.csv";
-	string L = "der_2_6_err_10.csv";
-	string M = "der_2_2_cons_err_10.csv";
-	string N = "der_2_4_cons_err_10.csv";
-	string O = "der_2_6_cons_err_10.csv";
-	string P = "der_2_2_cons_10.csv";
-	string Q = "der_2_4_cons_10.csv";
-	string R = "der_2_6_cons_10.csv";
-
+	string A = "der_1_2_10.csv",
+	 B = "der_2_2_10.csv",
+	 C = "der_1_4_10.csv",
+	 D = "der_2_4_10.csv",
+	 E = "der_1_6_10.csv",
+	 F = "der_2_6_10.csv",
+	 G = "der_1_2_err_10.csv",
+	 H = "der_2_2_err_10.csv",
+	 I = "der_1_4_err_10.csv",
+	 J = "der_2_4_err_10.csv",
+	 K = "der_1_6_err_10.csv",
+	 L = "der_2_6_err_10.csv",
+	 M = "der_2_2_cons_err_10.csv",
+	 N = "der_2_4_cons_err_10.csv",
+	 O = "der_2_6_cons_err_10.csv",
+	 P = "der_2_2_cons_10.csv",
+	 Q = "der_2_4_cons_10.csv",
+	 R = "der_2_6_cons_10.csv",
+	 AA = "cos_10.csv",
+	 BB = "cos_100.csv",
+	 CC = "cos_1000.csv",
+	 DD = "sin_10.csv",
+	 EE = "sin_100.csv",
+	 FF = "sin_1000.csv";
 
 // For all orders at 10 cells
 
-	// Second Order
+	// Second Order -------------------------------------------------------------------------------------------------------------
 	
 	dx = (x_high - x_low)/(n-1);
+	
+	for ( i = 0; i < n + 2*gc; i++) {
+		x[i] = x_low - gc*dx + i*dx; 	// create domain
+	}
+	
+
+	for ( i = 0; i < n + 2*gc; i++){    // Analytical Solutions for comparison and derivative
+
+		Asin[i]   =  sin(x[i]);
+		N_Asin[i] = -sin(x[i]);
+		Acos[i]   =  cos(x[i]);
+	}
+	create(AA,x,Acos,sz);
+	create(DD,x,Asin,sz);
+
+
+	derivative = DDx(Asin,&dx,&gc,&n,order);
+	derivative = fill_gc(derivative,gc,n);
+	double_derivative_conservative = DDx(derivative,&dx,&gc,&n,order);
+	double_derivative_conservative = fill_gc(double_derivative_conservative,gc,n);
+	double_derivative = DDxDDx(Asin,&dx,&gc,&n,order);
+	double_derivative = fill_gc(double_derivative,gc,n);
+
+	err_d   = error(derivative,Acos);
+	err_dd  = error(double_derivative,N_Asin);
+	err_ddc = error(double_derivative_conservative,N_Asin);
+
+
+	create(A,x,derivative,sz);
+	create(B,x,double_derivative,sz);
+	create(P,x,double_derivative_conservative,sz);
+	create(G,x,err_d,sz);
+	create(H,x,err_dd,sz);
+	create(M,x,err_ddc,sz);
+	
+	// Fourth Order -------------------------------------------------------------------------------------------------------------
+	order = 4, gc = order/2,sz = n + 2*gc;
+
+	for ( i = 0; i < n + 2*gc; i++) {
+		x[i] = x_low - gc*dx + i*dx; 	// create domain
+	}
+	
+
+	for ( i = 0; i < n + 2*gc; i++){    // Analytical Solutions for comparison and derivative
+
+		Asin[i]   =  sin(x[i]);
+		N_Asin[i] = -sin(x[i]);
+		Acos[i]   =  cos(x[i]);
+	}
+	
+	derivative = DDx(Asin,&dx,&gc,&n,order);
+	derivative = fill_gc(derivative,gc,n);
+	double_derivative_conservative = DDx(derivative,&dx,&gc,&n,order);
+	double_derivative_conservative = fill_gc(double_derivative_conservative,gc,n);
+	double_derivative = DDxDDx(Asin,&dx,&gc,&n,order);
+	double_derivative = fill_gc(double_derivative,gc,n);
+
+	err_d   = error(derivative,Acos);
+	err_dd  = error(double_derivative,N_Asin);
+	err_ddc = error(double_derivative_conservative,N_Asin);
+
+
+	create(C,x,derivative,sz);
+	create(D,x,double_derivative,sz);
+	create(Q,x,double_derivative_conservative,sz);
+	create(I,x,err_d,sz);
+	create(J,x,err_dd,sz);
+	create(N,x,err_ddc,sz);
+
+	// Sixth Order -------------------------------------------------------------------------------------------------------------
+
+	order = 6, gc = order/2,sz = n + 2*gc;
 	
 	for ( i = 0; i < n + 2*gc; i++) {
 		x[i] = x_low - gc*dx + i*dx; 	// create domain
@@ -62,7 +139,72 @@ int main()
 	derivative = DDx(Asin,&dx,&gc,&n,order);
 	derivative = fill_gc(derivative,gc,n);
 	double_derivative_conservative = DDx(derivative,&dx,&gc,&n,order);
+	double_derivative_conservative = fill_gc(double_derivative_conservative,gc,n);
 	double_derivative = DDxDDx(Asin,&dx,&gc,&n,order);
+	double_derivative = fill_gc(double_derivative,gc,n);
+
+	err_d   = error(derivative,Acos);
+	err_dd  = error(double_derivative,N_Asin);
+	err_ddc = error(double_derivative_conservative,N_Asin);
+
+	create(E,x,derivative,sz);
+	create(F,x,double_derivative,sz);
+	create(K,x,double_derivative_conservative,sz);
+	create(L,x,err_d,sz);
+	create(O,x,err_dd,sz);
+	create(R,x,err_ddc,sz);
+
+
+// For all orders at 100 cells
+	n = 100;
+	order = 2, gc = order/2,sz = n + 2*gc;
+	
+	A = "der_1_2_100.csv";
+	B = "der_2_2_100.csv";
+	C = "der_1_4_100.csv";
+	D = "der_2_4_100.csv";
+	E = "der_1_6_100.csv";
+	F = "der_2_6_100.csv";
+	G = "der_1_2_err_100.csv";
+	H = "der_2_2_err_100.csv";
+	I = "der_1_4_err_100.csv";
+	J = "der_2_4_err_100.csv";
+	K = "der_1_6_err_100.csv";
+	L = "der_2_6_err_100.csv";
+	M = "der_2_2_cons_err_100.csv";
+	N = "der_2_4_cons_err_100.csv";
+	O = "der_2_6_cons_err_100.csv";
+	P = "der_2_2_cons_100.csv";
+	Q = "der_2_4_cons_100.csv";
+	R = "der_2_6_cons_100.csv";
+	
+	// Second Order -------------------------------------------------------------------------------------------------------------
+	
+	dx = (x_high - x_low)/(n-1);
+	
+	for ( i = 0; i < n + 2*gc; i++) {
+		x[i] = x_low - gc*dx + i*dx; 	// create domain
+	}
+	
+
+	for ( i = 0; i < n + 2*gc; i++){    // Analytical Solutions for comparison and derivative
+
+		Asin[i]   =  sin(x[i]);
+		N_Asin[i] = -sin(x[i]);
+		Acos[i]   =  cos(x[i]);
+	}
+	
+	create(BB,x,Acos,sz);
+	create(EE,x,Asin,sz);
+
+
+	derivative = DDx(Asin,&dx,&gc,&n,order);
+	derivative = fill_gc(derivative,gc,n);
+	double_derivative_conservative = DDx(derivative,&dx,&gc,&n,order);
+	double_derivative_conservative = fill_gc(double_derivative_conservative,gc,n);
+	double_derivative = DDxDDx(Asin,&dx,&gc,&n,order);
+	double_derivative = fill_gc(double_derivative,gc,n);
+
 	err_d   = error(derivative,Acos);
 	err_dd  = error(double_derivative,N_Asin);
 	err_ddc = error(double_derivative_conservative,N_Asin);
@@ -74,28 +216,205 @@ int main()
 	create(G,x,err_d,sz);
 	create(H,x,err_dd,sz);
 	create(M,x,err_ddc,sz);
-	//vector<double>
+	
+	// Fourth Order -------------------------------------------------------------------------------------------------------------
+	order = 4, gc = order/2,sz = n + 2*gc;
+	
+	for ( i = 0; i < n + 2*gc; i++) {
+		x[i] = x_low - gc*dx + i*dx; 	// create domain
+	}
 	
 
+	for ( i = 0; i < n + 2*gc; i++){    // Analytical Solutions for comparison and derivative
+
+		Asin[i]   =  sin(x[i]);
+		N_Asin[i] = -sin(x[i]);
+		Acos[i]   =  cos(x[i]);
+	}
+	
+	derivative = DDx(Asin,&dx,&gc,&n,order);
+	derivative = fill_gc(derivative,gc,n);
+	double_derivative_conservative = DDx(derivative,&dx,&gc,&n,order);
+	double_derivative_conservative = fill_gc(double_derivative_conservative,gc,n);
+	double_derivative = DDxDDx(Asin,&dx,&gc,&n,order);
+	double_derivative = fill_gc(double_derivative,gc,n);
+
+	err_d   = error(derivative,Acos);
+	err_dd  = error(double_derivative,N_Asin);
+	err_ddc = error(double_derivative_conservative,N_Asin);
+
+
+	create(C,x,derivative,sz);
+	create(D,x,double_derivative,sz);
+	create(Q,x,double_derivative_conservative,sz);
+	create(I,x,err_d,sz);
+	create(J,x,err_dd,sz);
+	create(N,x,err_ddc,sz);
+
+	// Sixth Order -------------------------------------------------------------------------------------------------------------
+
+	order = 6, gc = order/2,sz = n + 2*gc;
+
+	for ( i = 0; i < n + 2*gc; i++) {
+		x[i] = x_low - gc*dx + i*dx; 	// create domain
+	}
+	
+
+	for ( i = 0; i < n + 2*gc; i++){    // Analytical Solutions for comparison and derivative
+
+		Asin[i]   =  sin(x[i]);
+		N_Asin[i] = -sin(x[i]);
+		Acos[i]   =  cos(x[i]);
+	}
+	
+	derivative = DDx(Asin,&dx,&gc,&n,order);
+	derivative = fill_gc(derivative,gc,n);
+	double_derivative_conservative = DDx(derivative,&dx,&gc,&n,order);
+	double_derivative_conservative = fill_gc(double_derivative_conservative,gc,n);
+	double_derivative = DDxDDx(Asin,&dx,&gc,&n,order);
+	double_derivative = fill_gc(double_derivative,gc,n);
+
+	err_d   = error(derivative,Acos);
+	err_dd  = error(double_derivative,N_Asin);
+	err_ddc = error(double_derivative_conservative,N_Asin);
+
+	create(E,x,derivative,sz);
+	create(F,x,double_derivative,sz);
+	create(K,x,double_derivative_conservative,sz);
+	create(L,x,err_d,sz);
+	create(O,x,err_dd,sz);
+	create(R,x,err_ddc,sz);
+
+
+
+// For all orders at 1000 cells
+	n = 1000;
+	order = 2, gc = order/2,sz = n + 2*gc;
+	A = "der_1_2_1000.csv";
+	B = "der_2_2_1000.csv";
+	C = "der_1_4_1000.csv";
+	D = "der_2_4_1000.csv";
+	E = "der_1_6_1000.csv";
+	F = "der_2_6_1000.csv";
+	G = "der_1_2_err_1000.csv";
+	H = "der_2_2_err_1000.csv";
+	I = "der_1_4_err_1000.csv";
+	J = "der_2_4_err_1000.csv";
+	K = "der_1_6_err_1000.csv";
+	L = "der_2_6_err_1000.csv";
+	M = "der_2_2_cons_err_1000.csv";
+	N = "der_2_4_cons_err_1000.csv";
+	O = "der_2_6_cons_err_1000.csv";
+	P = "der_2_2_cons_1000.csv";
+	Q = "der_2_4_cons_1000.csv";
+	R = "der_2_6_cons_1000.csv";
+	
+	// Second Order -------------------------------------------------------------------------------------------------------------
+	
+	dx = (x_high - x_low)/(n-1);
+	
+	for ( i = 0; i < n + 2*gc; i++) {
+		x[i] = x_low - gc*dx + i*dx; 	// create domain
+	}
+	
+
+	for ( i = 0; i < n + 2*gc; i++){    // Analytical Solutions for comparison and derivative
+
+		Asin[i]   =  sin(x[i]);
+		N_Asin[i] = -sin(x[i]);
+		Acos[i]   =  cos(x[i]);
+	}
+	
+	create(CC,x,Acos,sz);
+	create(FF,x,Asin,sz);
+
+	derivative = DDx(Asin,&dx,&gc,&n,order);
+	derivative = fill_gc(derivative,gc,n);
+	double_derivative_conservative = DDx(derivative,&dx,&gc,&n,order);
+	double_derivative_conservative = fill_gc(double_derivative_conservative,gc,n);
+	double_derivative = DDxDDx(Asin,&dx,&gc,&n,order);
+	double_derivative = fill_gc(double_derivative,gc,n);
+
+	err_d   = error(derivative,Acos);
+	err_dd  = error(double_derivative,N_Asin);
+	err_ddc = error(double_derivative_conservative,N_Asin);
+
+
+	create(A,x,derivative,sz);
+	create(B,x,double_derivative,sz);
+	create(P,x,double_derivative_conservative,sz);
+	create(G,x,err_d,sz);
+	create(H,x,err_dd,sz);
+	create(M,x,err_ddc,sz);
+	
+	// Fourth Order -------------------------------------------------------------------------------------------------------------
+	order = 4, gc = order/2,sz = n + 2*gc;
+
+	for ( i = 0; i < n + 2*gc; i++) {
+		x[i] = x_low - gc*dx + i*dx; 	// create domain
+	}
+	
+
+	for ( i = 0; i < n + 2*gc; i++){    // Analytical Solutions for comparison and derivative
+
+		Asin[i]   =  sin(x[i]);
+		N_Asin[i] = -sin(x[i]);
+		Acos[i]   =  cos(x[i]);
+	}
+	
+	derivative = DDx(Asin,&dx,&gc,&n,order);
+	derivative = fill_gc(derivative,gc,n);
+	double_derivative_conservative = DDx(derivative,&dx,&gc,&n,order);
+	double_derivative_conservative = fill_gc(double_derivative_conservative,gc,n);
+	double_derivative = DDxDDx(Asin,&dx,&gc,&n,order);
+	double_derivative = fill_gc(double_derivative,gc,n);
+
+	err_d   = error(derivative,Acos);
+	err_dd  = error(double_derivative,N_Asin);
+	err_ddc = error(double_derivative_conservative,N_Asin);
+
+
+	create(C,x,derivative,sz);
+	create(D,x,double_derivative,sz);
+	create(Q,x,double_derivative_conservative,sz);
+	create(I,x,err_d,sz);
+	create(J,x,err_dd,sz);
+	create(N,x,err_ddc,sz);
+
+	// Sixth Order -------------------------------------------------------------------------------------------------------------
+
+	order = 6, gc = order/2,sz = n + 2*gc;
 
 	
-	// create(C,x,derivative4_s,sz);
-	// create(D,x,derivative4_2_s,sz);
-	// create(E,x,derivative6_s,sz);
-	// create(F,x,derivative6_2_s,sz);
+	for ( i = 0; i < n + 2*gc; i++) {
+		x[i] = x_low - gc*dx + i*dx; 	// create domain
+	}
 	
-	// create(I,x,err_sm_d1_4,sz);
-	// create(J,x,err_sm_d2_4,sz);
-	// create(K,x,err_sm_d1_6,sz);
-	// create(L,x,err_sm_d2_6,sz);
 
-	// create(N,x,err_sm_d2_4_cons,sz);
-	// create(O,x,err_sm_d2_6_cons,sz);
+	for ( i = 0; i < n + 2*gc; i++){    // Analytical Solutions for comparison and derivative
 
-	// create(Q,x,derivative4_2_s_cons,sz);
-	// create(R,x,derivative6_2_s_cons,sz);
+		Asin[i]   =  sin(x[i]);
+		N_Asin[i] = -sin(x[i]);
+		Acos[i]   =  cos(x[i]);
+	}
+	
+	derivative = DDx(Asin,&dx,&gc,&n,order);
+	derivative = fill_gc(derivative,gc,n);
+	double_derivative_conservative = DDx(derivative,&dx,&gc,&n,order);
+	double_derivative_conservative = fill_gc(double_derivative_conservative,gc,n);
+	double_derivative = DDxDDx(Asin,&dx,&gc,&n,order);
+	double_derivative = fill_gc(double_derivative,gc,n);
 
+	err_d   = error(derivative,Acos);
+	err_dd  = error(double_derivative,N_Asin);
+	err_ddc = error(double_derivative_conservative,N_Asin);
 
+	create(E,x,derivative,sz);
+	create(F,x,double_derivative,sz);
+	create(K,x,double_derivative_conservative,sz);
+	create(L,x,err_d,sz);
+	create(O,x,err_dd,sz);
+	create(R,x,err_ddc,sz);
 
 	return 0;
 	
