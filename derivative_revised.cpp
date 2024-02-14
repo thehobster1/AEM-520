@@ -151,10 +151,10 @@ int main()
 
 	create(E,x,derivative,sz);
 	create(F,x,double_derivative,sz);
-	create(K,x,double_derivative_conservative,sz);
-	create(L,x,err_d,sz);
-	create(O,x,err_dd,sz);
-	create(R,x,err_ddc,sz);
+	create(R,x,double_derivative_conservative,sz);
+	create(K,x,err_d,sz);
+	create(L,x,err_dd,sz);
+	create(O,x,err_ddc,sz);
 
 
 // For all orders at 100 cells
@@ -286,10 +286,10 @@ int main()
 
 	create(E,x,derivative,sz);
 	create(F,x,double_derivative,sz);
-	create(K,x,double_derivative_conservative,sz);
-	create(L,x,err_d,sz);
-	create(O,x,err_dd,sz);
-	create(R,x,err_ddc,sz);
+	create(R,x,double_derivative_conservative,sz);
+	create(K,x,err_d,sz);
+	create(L,x,err_dd,sz);
+	create(O,x,err_ddc,sz);
 
 
 // For all orders at 1000 cells
@@ -422,10 +422,10 @@ int main()
 
 	create(E,x,derivative,sz);
 	create(F,x,double_derivative,sz);
-	create(K,x,double_derivative_conservative,sz);
-	create(L,x,err_d,sz);
-	create(O,x,err_dd,sz);
-	create(R,x,err_ddc,sz);
+	create(R,x,double_derivative_conservative,sz);
+	create(K,x,err_d,sz);
+	create(L,x,err_dd,sz);
+	create(O,x,err_ddc,sz);
 
 	return 0;
 	
