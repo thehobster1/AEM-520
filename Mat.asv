@@ -62,10 +62,10 @@ sin_1000 = plotCSV('sin_1000.csv', 'sin_1000');
 figure
 hold on
 title('10 Cell Domain, First Order Derivative')
-plot (cos_10(:,1),cos_10(:,2))
-plot (der_1_2_10(:,1),der_1_2_10(:,2))
-plot (der_1_4_10(:,1),der_1_4_10(:,2))
-plot (der_1_6_10(:,1),der_1_6_10(:,2))
+plot (cos_10(4:13,1),cos_10(:,2))
+plot (der_1_2_10(4:13,1),der_1_2_10(:,2))
+plot (der_1_4_10(4:13,1),der_1_4_10(:,2))
+plot (der_1_6_10(4:13,1),der_1_6_10(:,2))
 
 legend('Analytical','Second Order','Fourth Order','Sixth Order')
 xlabel('X Axis')
@@ -87,7 +87,7 @@ hold off
 figure
 hold on
 title('100 Cell Domain, First Order Derivative')
-plot (cos_100(:,1),cos_100(:,2))
+plot (cos_100(:,1),cos_100(4:103,2))
 plot (der_1_2_100(:,1),der_1_2_100(:,2))
 plot (der_1_4_100(:,1),der_1_4_100(:,2))
 plot (der_1_6_100(:,1),der_1_6_100(:,2))
@@ -127,7 +127,7 @@ axes('XScale', 'linear', 'YScale', 'log')
 hold on
 title('1000 Cell Domain, First Order Derivative, Error')
 plot (der_1_2_err_1000(:,1),abs(der_1_2_err_1000(:,2)))
-plot (der_1_4_err_1000(:,1),abs(der_1_4_err_1000(:,2)))
+plot (der_1_4_err_1000(4:1003,1),abs(der_1_4_err_1000(:,2)))
 plot (der_1_6_err_1000(:,1),abs(der_1_6_err_1000(:,2)))
 legend('Second Order','Fourth Order','Sixth Order')
 xlabel('X Axis')
@@ -334,7 +334,7 @@ axes('XScale', 'linear', 'YScale', 'log')
 hold on
 title('10 Nodes, Sixth Order Error, Conservative Vs Non-Conservative')
 loglog (der_2_6_cons_err_10(:,1),abs(der_2_6_cons_err_10(:,2)))
-loglog (der_2_6_err_10(:,1),abs(der_2_6_err_10(:,2)))
+loglog (der_2_6_err_10(4:13,1),abs(der_2_6_err_10(4:13,2)))
 legend('Conservative','Non Conservative')
 xlabel('X Axis')
 ylabel('Y Axis')
@@ -344,8 +344,8 @@ figure
 axes('XScale', 'linear', 'YScale', 'log')
 hold on
 title('100 Nodes, Sixth Order Error, Conservative Vs Non-Conservative')
-loglog (der_2_6_cons_err_100(:,1),abs(der_2_6_cons_err_100(:,2)))
-loglog (der_2_6_err_100(:,1),abs(der_2_6_err_100(:,2)))
+loglog (der_2_6_cons_err_100(4:103,1),abs(der_2_6_cons_err_100(4:103,2)))
+loglog (der_2_6_err_100(4:103,1),abs(der_2_6_err_100(4:103,2)))
 legend('Conservative','Non Conservative')
 xlabel('X Axis')
 ylabel('Y Axis')
@@ -355,8 +355,8 @@ figure
 axes('XScale', 'linear', 'YScale', 'log')
 hold on
 title('1000 Nodes, Sixth Order Error, Conservative Vs Non-Conservative')
-loglog (der_2_6_cons_err_1000(:,1),abs(der_2_6_cons_err_1000(:,2)))
-loglog (der_2_6_err_1000(:,1),abs(der_2_6_err_1000(:,2)))
+loglog (der_2_6_cons_err_1000(4:1003,1),abs(der_2_6_cons_err_1000(4:1003,2)))
+loglog (der_2_6_err_1000(4:1003,1),abs(der_2_6_err_1000(4:1003,2)))
 legend('Conservative','Non Conservative')
 xlabel('X Axis')
 ylabel('Y Axis')
@@ -366,8 +366,8 @@ hold off
 figure
 hold on
 title('10 Nodes, Second Order, Conservative Vs Non-Conservative')
-loglog (der_2_2_cons_10(:,1),der_2_2_cons_10(:,2))
-loglog (der_2_2_10(:,1),der_2_2_10(:,2))
+loglog (der_2_2_cons_10(7:10,1),der_2_2_cons_10(7:10,2))
+loglog (der_2_2_10(4:13,1),der_2_2_10(4:13,2))
 legend('Conservative','Non Conservative')
 xlabel('X Axis')
 ylabel('Y Axis')
@@ -376,8 +376,8 @@ hold off
 figure
 hold on
 title('100 Nodes, Second Order, Conservative Vs Non-Conservative')
-loglog (der_2_2_cons_100(:,1),der_2_2_cons_100(:,2))
-loglog (der_2_2_100(:,1),der_2_2_100(:,2))
+loglog (der_2_2_cons_100(7:100,1),der_2_2_cons_100(7:100,2))
+loglog (der_2_2_100(4:103,1),der_2_2_100(4:103,2))
 legend('Conservative','Non Conservative')
 xlabel('X Axis')
 ylabel('Y Axis')
@@ -386,8 +386,8 @@ hold off
 figure
 hold on
 title('1000 Nodes, Second Order, Conservative Vs Non-Conservative')
-loglog (der_2_2_cons_1000(:,1),der_2_2_cons_1000(:,2))
-loglog (der_2_2_1000(:,1),der_2_2_1000(:,2))
+loglog (der_2_2_cons_1000(7:1000,1),der_2_2_cons_1000(7:1000,2))
+loglog (der_2_2_1000(4:1003,1),der_2_2_1000(4:1003,2))
 legend('Conservative','Non Conservative')
 xlabel('X Axis')
 ylabel('Y Axis')
@@ -396,8 +396,8 @@ hold off
 figure
 hold on
 title('10 Nodes, Fourth Order, Conservative Vs Non-Conservative')
-loglog (der_2_4_cons_10(:,1),der_2_4_cons_10(:,2))
-loglog (der_2_4_10(:,1),der_2_4_10(:,2))
+loglog (der_2_4_cons_10(7:10,1),der_2_4_cons_10(7:10,2))
+loglog (der_2_4_10(6:13,1),der_2_4_10(6:13,2))
 legend('Conservative','Non Conservative')
 xlabel('X Axis')
 ylabel('Y Axis')
@@ -406,8 +406,8 @@ hold off
 figure
 hold on
 title('100 Nodes, Fourth Order, Conservative Vs Non-Conservative')
-loglog (der_2_4_cons_100(:,1),der_2_4_cons_100(:,2))
-loglog (der_2_4_100(:,1),der_2_4_100(:,2))
+loglog (der_2_4_cons_100(7:100,1),der_2_4_cons_100(7:100,2))
+loglog (der_2_4_100(4:103,1),der_2_4_100(4:103,2))
 legend('Conservative','Non Conservative')
 xlabel('X Axis')
 ylabel('Y Axis')
@@ -416,8 +416,8 @@ hold off
 figure
 hold on
 title('1000 Nodes, Fourth Order, Conservative Vs Non-Conservative')
-loglog (der_2_4_cons_1000(:,1),der_2_4_cons_1000(:,2))
-loglog (der_2_4_1000(:,1),der_2_4_1000(:,2))
+loglog (der_2_4_cons_1000(7:1000,1),der_2_4_cons_1000(7:1000,2))
+loglog (der_2_4_1000(4:1003,1),der_2_4_1000(4:1003,2))
 legend('Conservative','Non Conservative')
 xlabel('X Axis')
 ylabel('Y Axis')
@@ -426,8 +426,8 @@ hold off
 figure
 hold on
 title('10 Nodes, Sixth Order, Conservative Vs Non-Conservative')
-loglog (der_2_6_cons_10(:,1),der_2_6_cons_10(:,2))
-loglog (der_2_6_10(:,1),der_2_6_10(:,2))
+loglog (der_2_6_cons_10(7:10,1),der_2_6_cons_10(7:10,2))
+loglog (der_2_6_10(4:13,1),der_2_6_10(4:13,2))
 legend('Conservative','Non Conservative')
 xlabel('X Axis')
 ylabel('Y Axis')
@@ -436,8 +436,8 @@ hold off
 figure
 hold on
 title('100 Nodes, Sixth Order, Conservative Vs Non-Conservative')
-loglog (der_2_6_cons_100(:,1),der_2_6_cons_100(:,2))
-loglog (der_2_6_100(:,1),der_2_6_100(:,2))
+loglog (der_2_6_cons_100(7:100,1),der_2_6_cons_100(7:100,2))
+loglog (der_2_6_100(4:103,1),der_2_6_100(4:103,2))
 legend('Conservative','Non Conservative')
 xlabel('X Axis')
 ylabel('Y Axis')
@@ -446,8 +446,8 @@ hold off
 figure
 hold on
 title('1000 Nodes, Sixth Order, Conservative Vs Non-Conservative')
-loglog (der_2_6_cons_1000(:,1),der_2_6_cons_1000(:,2))
-loglog (der_2_6_1000(:,1),der_2_6_1000(:,2))
+loglog (der_2_6_cons_1000(7:1000,1),der_2_6_cons_1000(7:1000,2))
+loglog (der_2_6_1000(7:1000,1),der_2_6_1000(7:1000,2))
 legend('Conservative','Non Conservative')
 xlabel('X Axis')
 ylabel('Y Axis')

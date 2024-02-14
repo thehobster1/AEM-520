@@ -88,7 +88,8 @@ int main()
 	
 	// Fourth Order -------------------------------------------------------------------------------------------------------------
 	order = 4, gc = order/2,sz = n + 2*gc;
-
+	Acos.resize(n + 2*gc),x.resize(n + 2*gc),Asin.resize(n + 2*gc),derivative.resize(n + 2*gc),double_derivative.resize(n + 2*gc),double_derivative_conservative.resize(n + 2*gc),N_Asin.resize(n + 2*gc);
+	err_d.resize(n + 2*gc), err_dd.resize(n + 2*gc), err_ddc.resize(n + 2*gc);
 	for ( i = 0; i < n + 2*gc; i++) {
 		x[i] = x_low - gc*dx + i*dx; 	// create domain
 	}
@@ -123,7 +124,8 @@ int main()
 	// Sixth Order -------------------------------------------------------------------------------------------------------------
 
 	order = 6, gc = order/2,sz = n + 2*gc;
-	
+	Acos.resize(n + 2*gc),x.resize(n + 2*gc),Asin.resize(n + 2*gc),derivative.resize(n + 2*gc),double_derivative.resize(n + 2*gc),double_derivative_conservative.resize(n + 2*gc),N_Asin.resize(n + 2*gc);
+	err_d.resize(n + 2*gc), err_dd.resize(n + 2*gc), err_ddc.resize(n + 2*gc);
 	for ( i = 0; i < n + 2*gc; i++) {
 		x[i] = x_low - gc*dx + i*dx; 	// create domain
 	}
@@ -158,6 +160,8 @@ int main()
 // For all orders at 100 cells
 	n = 100;
 	order = 2, gc = order/2,sz = n + 2*gc;
+	Acos.resize(n + 2*gc),x.resize(n + 2*gc),Asin.resize(n + 2*gc),derivative.resize(n + 2*gc),double_derivative.resize(n + 2*gc),double_derivative_conservative.resize(n + 2*gc),N_Asin.resize(n + 2*gc);
+	err_d.resize(n + 2*gc), err_dd.resize(n + 2*gc), err_ddc.resize(n + 2*gc);
 	
 	A = "der_1_2_100.csv";
 	B = "der_2_2_100.csv";
@@ -219,7 +223,8 @@ int main()
 	
 	// Fourth Order -------------------------------------------------------------------------------------------------------------
 	order = 4, gc = order/2,sz = n + 2*gc;
-	
+	Acos.resize(n + 2*gc),x.resize(n + 2*gc),Asin.resize(n + 2*gc),derivative.resize(n + 2*gc),double_derivative.resize(n + 2*gc),double_derivative_conservative.resize(n + 2*gc),N_Asin.resize(n + 2*gc);
+	err_d.resize(n + 2*gc), err_dd.resize(n + 2*gc), err_ddc.resize(n + 2*gc);
 	for ( i = 0; i < n + 2*gc; i++) {
 		x[i] = x_low - gc*dx + i*dx; 	// create domain
 	}
@@ -254,7 +259,8 @@ int main()
 	// Sixth Order -------------------------------------------------------------------------------------------------------------
 
 	order = 6, gc = order/2,sz = n + 2*gc;
-
+	Acos.resize(n + 2*gc),x.resize(n + 2*gc),Asin.resize(n + 2*gc),derivative.resize(n + 2*gc),double_derivative.resize(n + 2*gc),double_derivative_conservative.resize(n + 2*gc),N_Asin.resize(n + 2*gc);
+	err_d.resize(n + 2*gc), err_dd.resize(n + 2*gc), err_ddc.resize(n + 2*gc);
 	for ( i = 0; i < n + 2*gc; i++) {
 		x[i] = x_low - gc*dx + i*dx; 	// create domain
 	}
@@ -286,10 +292,13 @@ int main()
 	create(R,x,err_ddc,sz);
 
 
-
 // For all orders at 1000 cells
 	n = 1000;
 	order = 2, gc = order/2,sz = n + 2*gc;
+
+	 Acos.resize(n + 2*gc),x.resize(n + 2*gc),Asin.resize(n + 2*gc),derivative.resize(n + 2*gc),double_derivative.resize(n + 2*gc),double_derivative_conservative.resize(n + 2*gc),N_Asin.resize(n + 2*gc);
+	 err_d.resize(n + 2*gc), err_dd.resize(n + 2*gc), err_ddc.resize(n + 2*gc);
+
 	A = "der_1_2_1000.csv";
 	B = "der_2_2_1000.csv";
 	C = "der_1_4_1000.csv";
@@ -349,7 +358,8 @@ int main()
 	
 	// Fourth Order -------------------------------------------------------------------------------------------------------------
 	order = 4, gc = order/2,sz = n + 2*gc;
-
+	Acos.resize(n + 2*gc),x.resize(n + 2*gc),Asin.resize(n + 2*gc),derivative.resize(n + 2*gc),double_derivative.resize(n + 2*gc),double_derivative_conservative.resize(n + 2*gc),N_Asin.resize(n + 2*gc);
+	err_d.resize(n + 2*gc), err_dd.resize(n + 2*gc), err_ddc.resize(n + 2*gc);
 	for ( i = 0; i < n + 2*gc; i++) {
 		x[i] = x_low - gc*dx + i*dx; 	// create domain
 	}
@@ -384,7 +394,8 @@ int main()
 	// Sixth Order -------------------------------------------------------------------------------------------------------------
 
 	order = 6, gc = order/2,sz = n + 2*gc;
-
+	Acos.resize(n + 2*gc),x.resize(n + 2*gc),Asin.resize(n + 2*gc),derivative.resize(n + 2*gc),double_derivative.resize(n + 2*gc),double_derivative_conservative.resize(n + 2*gc),N_Asin.resize(n + 2*gc);
+	err_d.resize(n + 2*gc), err_dd.resize(n + 2*gc), err_ddc.resize(n + 2*gc);
 	
 	for ( i = 0; i < n + 2*gc; i++) {
 		x[i] = x_low - gc*dx + i*dx; 	// create domain
