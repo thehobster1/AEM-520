@@ -116,20 +116,6 @@ void createFolder(vector<funcValues> &func, string folder){
         create(func[i], s);
     
 
-        //ss << setw(4) << setfill('0') << i;
-        //s = ss.str();
-
-        // cout << s << '\n';
-
-        //s = setfill('0')<<setw(4)<<i;
-        
-
-        // cout << "linWave:  " << i << "\n";
-
-        
-
-        //ss >> penis;
-
     }
 
     std::filesystem::current_path("..");
@@ -139,6 +125,18 @@ void sinFunc(funcValues &func){
     //for (int i; i < func.xValue.size() + 1; i++)
     for (auto & e : func.xValue){
         func.yValue.push_back(sin(e)+2);
+    }
+};
+
+void specFunc(funcValues &func){
+    //for (int i; i < func.xValue.size() + 1; i++)
+    for (auto & e : func.xValue){
+        if (e < M_PI) {
+            func.yValue.push_back(e);
+        }
+        else {
+            func.yValue.push_back(-e + 2*M_PI);
+        }
     }
 };
 
@@ -201,7 +199,7 @@ void nextVecLin(funcValues &func, funcValues &next, double c, double v, double c
     int n = func.gc/2;
 
     for(int i = n; i < (func.yValue.size()-n); i++){
-        next.yValue.push_back(func.yValue.at(i) - c*func.yDer.at(i-n)*func.dt + v*func.yDerDer.at(i-n));
+        next.yValue.push_back(func.yValue.at(i) - c*func.yDer.at(i-n)*func.dt + v*func.yDerDer.at(i-n)*func.dt);
         //cout << '\n' << next.yValue.at(i-n) << '\n';
     }
 
@@ -213,13 +211,13 @@ void nextVecLin(funcValues &func, funcValues &next, double c, double v, double c
 
 }
 
-void nextVecNon(funcValues &func, funcValues &next, double c, double cfl){
+void nextVecNon(funcValues &func, funcValues &next, double c, double v, double cfl){
     
 
     int n = func.gc/2;
 
     for(int i = n; i < (func.yValue.size()-n); i++){
-        next.yValue.push_back(func.yValue.at(i) - c*func.yValue.at(i-n)*func.yDer.at(i-n)*func.dt);
+        next.yValue.push_back(func.yValue.at(i) - c*func.yValue.at(i-n)*func.yDer.at(i-n)*func.dt + v*func.yDerDer.at(i-n)*func.dt);
         //cout << '\n' << next.yValue.at(i-n) << '\n';
     }
 
@@ -309,8 +307,8 @@ int main(){
 
     clock_t start = clock();
 
-    vector <funcValues> linWave;
-    //vector <funcValues> nonWave;
+    //vector <funcValues> linWave;
+    vector <funcValues> nonWave;
     int n;
     int order;
     double initial;
@@ -359,22 +357,22 @@ int main(){
     initial = initial*M_PI;
     final = final*M_PI;
     
-    funcValues linWaveZero(n, initial, final);
-    linWaveZero.t = 0;
+    //funcValues linWaveZero(n, initial, final);
+    //linWaveZero.t = 0;
     
-    sinFunc(linWaveZero);
+    //specFunc(linWaveZero);
 
     //double uMax = * max_element(linWaveZero.yValue.begin(), linWaveZero.yValue.end());
-    linWaveZero.dt = linWaveZero.dx*cfl/c;
+    //linWaveZero.dt = linWaveZero.dx*cfl/c;
 
-    //funcValues nonWaveZero(n, initial, final);
-    //nonWaveZero.t = 0;
-    //sinFunc(nonWaveZero);
-    //double uMax = * max_element(nonWaveZero.yValue.begin(), nonWaveZero.yValue.end());
-    //nonWaveZero.dt = nonWaveZero.dx*cfl/(c*uMax);
+    funcValues nonWaveZero(n, initial, final);
+    nonWaveZero.t = 0;
+    specFunc(nonWaveZero);
+    double uMax = * max_element(nonWaveZero.yValue.begin(), nonWaveZero.yValue.end());
+    nonWaveZero.dt = nonWaveZero.dx*cfl/(c*uMax);
 
-    linWave.push_back(linWaveZero);
-    //nonWave.push_back(nonWaveZero);
+    //linWave.push_back(linWaveZero);
+    nonWave.push_back(nonWaveZero);
 
 
 
@@ -384,30 +382,30 @@ int main(){
 
         //funcValues linWaveLast = linWave.at(i-1);
 
-        getDer(order, linWave[i-1]);
+        //getDer(order, linWave[i-1]);
 
-        funcValues linWaveNext(n, initial, final);
+        //funcValues linWaveNext(n, initial, final);
 
-        nextVecLin(linWave[i-1], linWaveNext, c, v, cfl);
-
-        //cout<<"HERE";
-
-        //printY("t = " + to_string((i)*dt) +": ", linWaveNext);
-
-        linWave.push_back(linWaveNext);
-
-
-        //getDer(order, nonWave[i-1]);
-
-        //funcValues nonWaveNext(n, initial, final);
-
-        //nextVecNon(nonWave[i-1], nonWaveNext, c, cfl);
+        //nextVecLin(linWave[i-1], linWaveNext, c, v, cfl);
 
         //cout<<"HERE";
 
         //printY("t = " + to_string((i)*dt) +": ", linWaveNext);
 
-        //nonWave.push_back(nonWaveNext);
+        //linWave.push_back(linWaveNext);
+
+
+        getDer(order, nonWave[i-1]);
+
+        funcValues nonWaveNext(n, initial, final);
+
+        nextVecNon(nonWave[i-1], nonWaveNext, c, v, cfl);
+
+        //cout<<"HERE";
+
+        //printY("t = " + to_string((i)*dt) +": ", linWaveNext);
+
+        nonWave.push_back(nonWaveNext);
         
     }
 
@@ -417,8 +415,8 @@ int main(){
 
     //cout<< "TOTAL linWave: "<< linWave.size()<< '\n';
 
-    createFolder(linWave, "linWave");
-    //createFolder(nonWave, "nonWave");
+    //createFolder(linWave, "linWave");
+    createFolder(nonWave, "nonWave");
 
     start = clock()-start;
 
