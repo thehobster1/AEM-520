@@ -73,7 +73,9 @@ void createFolder(vector<funcValues> &func, string folder){
     std::filesystem::create_directory(folder);
     std::filesystem::current_path(folder);
 
-    for (int i = 0; i < func.size(); i+=5){
+    int count = func.size()/1000;
+
+    for (int i = 0; i < func.size(); i+=count){
 
         
 
@@ -132,11 +134,25 @@ void specFunc(funcValues &func){
     //for (int i; i < func.xValue.size() + 1; i++)
     for (auto & e : func.xValue){
         if (e < M_PI) {
-            func.yValue.push_back(e);
+            func.yValue.push_back(e-M_PI/2);
         }
         else {
-            func.yValue.push_back(-e + 2*M_PI);
+            func.yValue.push_back(-e+ 3*M_PI/2);
         }
+
+        // if (e < M_PI) {
+        //     func.yValue.push_back(e);
+        // }
+        // else {
+        //     func.yValue.push_back(-e+ 4*M_PI/2);
+        // }
+        // if (e < M_PI) {
+        //     func.yValue.push_back(-pow(e - M_PI/2,2) + pow(M_PI/2, 2));
+        // }
+        // else {
+        //     func.yValue.push_back(pow(e - 3*M_PI/2,2) - pow(M_PI/2, 2));
+
+        // }
     }
 };
 
@@ -223,7 +239,18 @@ void nextVecNon(funcValues &func, funcValues &next, double c, double v, double c
 
     double uMax = * max_element(next.yValue.begin(), next.yValue.end());
 
-    next.dt = next.dx*cfl/(c*uMax);
+    double dta = next.dx*cfl/(c*abs(uMax));
+
+    double dtb = pow(next.dx, 2)/v;
+
+    if (dta < dtb){
+        next.dt = dta;
+    }
+    else{
+        next.dt = dtb;
+    }
+
+
 
     next.t = next.dt + func.t;
 
@@ -352,7 +379,7 @@ int main(){
 
     input >> n >> order >> initial >> final >> cfl >> c >> v;
 
-    int tNodes = n*40;
+    int tNodes = n*400;
 
     initial = initial*M_PI;
     final = final*M_PI;
@@ -369,7 +396,18 @@ int main(){
     nonWaveZero.t = 0;
     specFunc(nonWaveZero);
     double uMax = * max_element(nonWaveZero.yValue.begin(), nonWaveZero.yValue.end());
-    nonWaveZero.dt = nonWaveZero.dx*cfl/(c*uMax);
+
+    double dta = nonWaveZero.dx*cfl/(c*abs(uMax));
+
+    double dtb = pow(nonWaveZero.dx, 2)/v;
+
+    if (dta < dtb){
+        nonWaveZero.dt = dta;
+    }
+    else{
+        nonWaveZero.dt = dtb;
+    }
+    
 
     //linWave.push_back(linWaveZero);
     nonWave.push_back(nonWaveZero);
