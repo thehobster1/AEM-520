@@ -10,28 +10,64 @@ using namespace std;
 std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
 vector<double> DDx(vector<double> A, double* dx,int* gc,int* n,int order)
+
 {
     vector<double> derivative(*n + 2 * *gc);
 
 		if (order == 2) {
-		for (int i = 0; i < *n + 2 * *gc; i++) {
-
-		derivative[i] = (A[i+1] - A[i-1])/2.0/ *dx;
-	
-		} 
+			for (int j = 1; j < *n + 2 * *gc; j++){
+				for (int i = 1; i < *n + 2 * *gc; i++) {
+				derivative[i,j] = (A[i+1,j] - A[i-1,j])/2.0/ *dx;
+				} 
+			}
 		} else if (order == 4) {
 		
-		for (int i = 0; i < *n + 2 * *gc; i++) {
+		for (int j = 1; j < *n + 2 * *gc; j++){
+			for (int i = 1; i < *n + 2 * *gc; i++) {
 
-		derivative[i] = (-A[i+2] + 8*A[i+1] - 8*A[i-1] + A[i-2])/12.0/ *dx;
+			derivative[i,j] = (-A[i+2,j] + 8*A[i+1,j] - 8*A[i-1,j] + A[i-2,j])/12.0/ *dx;
+			}
 		} 
 			
 		} else if (order == 6) {
+		for (int j = 1; j < *n + 2 * *gc; j++){
+			for (int i = 1; i < *n + 2 * *gc; i++) {
 
-		for (int i = 0; i < *n + 2 * *gc; i++) {
+			derivative[i,j] = (A[i+3,j]/60 - 3*A[i+2,j]/20 + 3*A[i+1,j]/4 - 3*A[i-1,j]/4 + 3*A[i-2,j]/20 - A[i-3,j]/60)/ *dx;
+			}
+		} 
+		}
 
-		derivative[i] = (A[i+3]/60 - 3*A[i+2]/20 + 3*A[i+1]/4 - 3*A[i-1]/4 + 3*A[i-2]/20 - A[i-3]/60)/ *dx;
 		
+
+	return derivative;
+}
+
+vector<double> DDy(vector<double> A, double* dy,int* gc,int* n,int order)
+{
+    vector<double> derivative(*n + 2 * *gc);
+
+		if (order == 2) {
+			for (int i = 1; i < *n + 2 * *gc; i++){
+				for (int j = 1; j < *n + 2 * *gc; j++) {
+				derivative[i,j] = (A[i,j+1] - A[i,j-1])/2.0/ *dy;
+				} 
+			}
+		} else if (order == 4) {
+		
+		for (int i = 1; i < *n + 2 * *gc; i++){
+			for (int j = 1; j < *n + 2 * *gc; j++) {
+
+			derivative[i,j] = (-A[i,j+2] + 8*A[i,j+1] - 8*A[i,j-1] + A[i,j-2])/12.0/ *dy;
+			}
+		} 
+			
+		} else if (order == 6) {
+		for (int i = 1; i < *n + 2 * *gc; i++){
+			for (int j = 1; j < *n + 2 * *gc; j++) {
+
+			derivative[i,j] = (A[i,j+3]/60 - 3*A[i,j+2]/20 + 3*A[i,j+1]/4 - 3*A[i,j-1]/4 + 3*A[i,j-2]/20 - A[i,j-3]/60)/ *dy;
+			}
 		} 
 		}
 
@@ -45,26 +81,64 @@ vector<double> DDxDDx(vector<double> A, double* dx,int* gc,int* n,int order)
     vector<double> derivative(*n + 2 * *gc);
 
 		if (order == 2) {
-		for (int i = 0; i < *n + 2 * *gc; i++) {
+			for (int j = 1; j < *n + 2 * *gc; j++) {
+				for (int i = 1; i < *n + 2 * *gc; i++) {
 
-		derivative[i] = (A[i+1] -2*A[i] + A[i-1])/ *dx/ *dx;
-	
-		} 
+				derivative[i,j] = (A[i+1,j] -2*A[i,j] + A[i-1,j])/ *dx/ *dx;
+				
+				}
+			} 
 		} else if (order == 4) {
-		
-		for (int i = 0; i < *n + 2 * *gc; i++) {
-
-		derivative[i] = (-A[i+2]/12.0 + 4.0*A[i+1]/3.0 - 5.0*A[i]/2.0 + 4*A[i-1]/3 - A[i-2]/12.0)/ *dx/ *dx;
-	
-		} 
+			for (int j = 2; j < *n + 2 * *gc; j++) {
+				for (int i = 2; i < *n + 2 * *gc; i++) {
+				
+				derivative[i,j] = (-A[i+2,j]/12.0 + 4.0*A[i+1,j]/3.0 - 5.0*A[i,j]/2.0 + 4*A[i-1,j]/3 - A[i-2,j]/12.0)/ *dx/ *dx;
+				
+				}
+			} 
 			
 		} else if (order == 6) {
+			for (int j = *gc; j < *n + 2 * *gc; j++) {
+				for (int i = *gc; i < *n + 2 * *gc; i++) {
 
-		for (int i = 0; i < *n + 2 * *gc; i++) {
+				derivative[i,j] = (A[i+3,j]/90 - 3*A[i+2,j]/20 + 3*A[i+1,j]/2 - 49*A[i,j]/18 + 3*A[i-1,j]/2 - 3*A[i-2,j]/20 + A[i-3,j]/90)/ *dx/ *dx;
 
-		derivative[i] = (A[i+3]/90 - 3*A[i+2]/20 + 3*A[i+1]/2 - 49*A[i]/18 + 3*A[i-1]/2 - 3*A[i-2]/20 + A[i-3]/90)/ *dx/ *dx;
-	
-		} 
+				}
+			} 
+		}
+
+	return derivative;
+}
+
+vector<double> DDyDDy(vector<double> A, double* dy,int* gc,int* n,int order)
+{
+    vector<double> derivative(*n + 2 * *gc);
+
+		if (order == 2) {
+			for (int i = *gc; i < *n + 2 * *gc; i++) {
+				for (int j = *gc; j < *n + 2 * *gc; j++) {
+
+				derivative[i,j] = (A[i,j+1] -2*A[i,j] + A[i,j-1])/ *dy/ *dy;
+				
+				}
+			} 
+		} else if (order == 4) {
+			for (int i = *gc; i < *n + 2 * *gc; i++) {
+				for (int j = *gc; j < *n + 2 * *gc; j++) {
+				
+				derivative[i,j] = (-A[i,j+2]/12.0 + 4.0*A[i,j+1]/3.0 - 5.0*A[i,j]/2.0 + 4*A[i,j-1]/3 - A[i,j-2]/12.0)/ *dy/ *dy;
+				
+				}
+			} 
+			
+		} else if (order == 6) {
+			for (int i = *gc; i < *n + 2 * *gc; i++) {
+				for (int j = *gc; j < *n + 2 * *gc; j++) {
+
+				derivative[i,j] = (A[i,j+3]/90 - 3*A[i,j+2]/20 + 3*A[i,j+1]/2 - 49*A[i,j]/18 + 3*A[i,j-1]/2 - 3*A[i,j-2]/20 + A[i,j-3]/90)/ *dy/ *dy;
+
+				}
+			} 
 		}
 
 	return derivative;
@@ -75,11 +149,22 @@ vector<double> fill_gc(vector<double> A, int gc,int n){
 	int sz = n + 2*gc;
 	for(int i = 0; i < gc; i++){
 		for(int j = 1; j < n; j++){
-		A[i,j] = A[n + i,j];
-		A[sz - i - 1,j] = A[2*gc - i - 1,j];
+			A[i,j] = A[n + i,j];
+			A[sz - i - 1,j] = A[2*gc - i - 1,j];
 		}
 	}	 
+ 	for(int jj = 0; jj < gc; jj++){
+		for(int ii = 1; ii < n; ii++){
+			A[ii,jj] = A[ii,n + jj];
+			A[ii,sz - jj - 1] = A[ii,2*gc - jj - 1];
+		}
+	}	
+	return A;
+}
 
+vector<double> fill_gcy(vector<double> A, int gc,int n){
+	
+	int sz = n + 2*gc;	 
 	for(int j = 0; j < gc; j++){
 		for(int i = 1; i < n; i++){
 		A[i,j] = A[i,n + j];
@@ -100,20 +185,70 @@ vector<double> error(vector<double> Numer,vector<double> Exact){
 	return error;
 }
 
-double find_dt(vector<double> u,double dx,double cfl,double nu) {
+double find_dt(vector<double> u,vector<double> v,double dx,double cfl,double nu) {
 	double dt;
 	double u_max = abs(*max_element(u.begin(),u.end()));
-	double dtvelo = dx*cfl/u_max;
+	double v_max = abs(*max_element(v.begin(),v.end()));
+	double dtvelo;
+	if (v_max > u_max){
+		dtvelo = dx*cfl/v_max;
+	}else{
+		dtvelo = dx*cfl/u_max;
+	}
 	double dtvisc = (dx*dx*cfl)/nu;
 	
 	if (dtvisc > dtvelo){
 		dt = dtvelo;
-	}else{ dt = dtvisc;}
+	}else{ 
+		dt = dtvisc;
+	}
 
 	return dt;
 }
 
-void create(string file, vector<double> x, vector<double> y,int n) 
+void create(string file, vector<double> A,int n) 
+{ 
+
+	
+    // file pointer 
+    fstream fout; 
+
+    // opens an existing csv file or creates a new file. 
+    fout.open(file, ios::out | ios::app); 
+  
+    int i,j;
+	// Read the input 
+    for (i = 0; i < n; ++i)
+    {
+        for (j = 0; j < n; ++j)
+            if (j < (n - 1)) {
+                fout << A[i,j] << ",";
+            }
+            else if (j == (n - 1)) {
+                fout << A[i,j] << "\n";
+            }
+    }
+}
+
+template <size_t row, size_t col>   
+void twodarray2csv(double* array[row][col], string filename)
+    {
+        std::ofstream myfile;
+        //myfile.open(filename);
+    
+    for (size_t i = 0; i < row; ++i)
+    {
+        for (size_t j = 0; j < col; ++j)
+            if (j < (col - 1)) {
+                myfile << array[i][j] << ",";
+            }
+            else if (j == (col - 1)) {
+                myfile << array[i][j] << "\n";
+            }
+    }
+}
+
+void createxy(string file, vector<double> x, vector<double> y,int n) 
 { 
 
 	
@@ -137,10 +272,9 @@ void create(string file, vector<double> x, vector<double> y,int n)
     } 
 }
 
-
 int main(){
 	
-	int nx, ny, order, gc, i,i_max,j,n;
+	int nx, ny, order, gc, i,i_max,j,n,k;
 	double x_low,x_high,cfl,dt,dx,nu,y_low,y_high,dy;
 	string type;
 	ifstream input;
@@ -176,25 +310,37 @@ int main(){
 
 	gc = order/2;		            // Find Number of GC
 	dt = 1.0/n*cfl;                 // Timestep
-	i_max = n*100;                   // Total Number of Iterations
+	i_max = n*10;                   // Total Number of Iterations
 
 	// ***** Define Mesh *****
 	dx = (x_high - x_low)/nx;
 	dy = (y_high - y_low)/ny;
 
-	vector<double> u(nx + 2*gc,ny + 2*gc), unew(nx + 2*gc,ny + 2*gc), x(nx + 2*gc), dudx(nx + 2*gc), d2u_d2x(nx + 2*gc);
-	vector<double> y(ny + 2*gc), dudy(ny + 2*gc), d2u_d2y(ny + 2*gc);
+	vector<double> u(nx + 2*gc,ny + 2*gc), unew(nx + 2*gc,ny + 2*gc), x(nx + 2*gc), dudx(nx + 2*gc,ny + 2*gc), d2u_d2x(nx + 2*gc,ny + 2*gc), dudy(nx + 2*gc,ny + 2*gc), d2u_d2y(nx + 2*gc,ny + 2*gc);
+	vector<double> v(nx + 2*gc,ny + 2*gc), vnew(nx + 2*gc,ny + 2*gc), y(ny + 2*gc), dvdx(nx + 2*gc,ny + 2*gc), d2v_d2x(nx + 2*gc,ny + 2*gc), dvdy(nx + 2*gc,ny + 2*gc), d2v_d2y(nx + 2*gc,ny + 2*gc);
 
 	// ***** Initial Conditions *****	
 		
 		for ( i = 0; i < n + 2*gc; i++) {
-			for (j = 0; j< n + 2*gc; j++){
+			
+			for (j = 0; j < n + 2*gc; j++){
 				x[i] = (x_low - gc*dx + i*dx + dx/2); 
-				y[i] = (y_low - gc*dy + j*dy + dy/2);
-				u[i,j] = sin(x[i])*cos(y[j]);
+				y[j] = (y_low - gc*dy + j*dy + dy/2);
+				//v[i,j] = sin(x[j])*cos(y[i]);
+
 			}
 		}
-		
+
+		for ( i = 0; i < n + 2*gc; i++) {
+			
+			for (j = 0; j < n + 2*gc; j++){
+				u[i,j]= sin(x[i])*sin(y[j]);
+				v[i,j] = 0.1;
+
+			}
+		}
+		create("init.csv",u,n+2*gc);
+		createxy("xy.csv",x,y,n + 2*gc);
 		// Create sub directory for csv
 		std::filesystem::remove_all("Data");
 		std::filesystem::create_directory("Data");
@@ -202,58 +348,66 @@ int main(){
 		string filename = "Iter_";
 
 	// Solve
-		j = 0;
-		int num = i_max/1000;
+		k = 0;
+		int num = i_max/100;
+		vector<double> V_mag(nx + 2*gc,ny + 2*gc);
 		for (int iter = 0; iter < i_max; iter++){
 			
 			dudx = DDx(u,&dx,&gc,&n,order);
 			d2u_d2x = DDxDDx(u,&dx,&gc,&n,order);
+			dudy = DDy(u,&dy,&gc,&n,order);
+			d2u_d2y = DDyDDy(u,&dy,&gc,&n,order);
+			dvdx = DDx(v,&dx,&gc,&n,order);
+			d2v_d2x = DDxDDx(v,&dx,&gc,&n,order);
+			dvdy = DDy(v,&dy,&gc,&n,order);
+			d2v_d2y = DDyDDy(v,&dy,&gc,&n,order);
 
-				if(type == "linear_convective"){
+				if(type == "burger"){
+
+					dt =  find_dt(u,v,dx,cfl,nu);
 					
-					for ( i = 0; i < n + 2*gc; i++){
-						unew[i] = u[i] - dt*dudx[i];
-						u[i] = unew[i];
-					}
-					
-				} else if(type == "nonlinear_convective"){
-					
-					dt =  find_dt(u,dx,cfl,nu);
-					for ( i = 0; i < n + 2*gc; i++){
-						unew[i] = u[i] - u[i]*dt*dudx[i];
-						u[i] = unew[i];
-					}
+					for ( j = 0; j < n + 2*gc; j++){
+						for ( i = 0; i < n + 2*gc; i++){
 
-				} else if (type == "burger"){
-					dt =  find_dt(u,dx,cfl,nu);
-					for ( i = 0; i < n + 2*gc; i++){
-						unew[i] = u[i] - dt*u[i]*dudx[i] + dt*nu*d2u_d2x[i];
-						u[i] = unew[i];
+						unew[i,j] = u[i,j] + dt*(-u[i,j]*dudx[i,j] - v[i,j]*dudy[i,j] + nu*(d2u_d2x[i,j] + d2u_d2y[i,j]));
+
+						vnew[i,j] = v[i,j] + dt*(-u[i,j]*dvdx[i,j] - v[i,j]*dvdy[i,j] + nu*(d2v_d2x[i,j] + d2v_d2y[i,j]));
+
+						u[i,j] = unew[i,j];
+
+						v[i,j] = vnew[i,j];
+						
+						//cout << unew[i,j] << " " << i << " " << j << " " << endl;
+						
+
+						}
 					}
-				}
-
-			u = fill_gc(u,gc,n);
-
+				}					
+				//cout << unew[i,j] << " " << i << " " << j << " " << endl;
+				u = fill_gc(u,gc,n);
+				v = fill_gcy(v,gc,n);
+			
 			if (iter%num == 0){         //Taking snapshots of runs
 				
-				string s = to_string(j);   // Organizing files names so matlab can read them in order
-				if (j < 10) {
+				string s = to_string(k);   // Organizing files names so matlab can read them in order
+				if (k < 10) {
 					s.insert(0,1,'0');
 					s.insert(0,1,'0');
 					s.insert(0,1,'0');
-				}else if (j<100){
+				}else if (k < 100){
 					s.insert(0,1,'0');
 					s.insert(0,1,'0');
 				}
-				else if (j<1000){
+				else if (k < 1000){
 					s.insert(0,1,'0');
 				}
 
 				filename = "Iter_";
 				filename.append(s);
 				filename.append(".csv");
-				create(filename,x,u,n+2*gc);
-				j = j + 1;
+				create(filename,u,n + 2*gc);
+				
+				k = k + 1;
 			}
 			
 		}
