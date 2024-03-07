@@ -51,7 +51,7 @@ class funcValues {
             yf = finaly;
             dx = (xf - x0)/n;
             dy = (yf - y0)/n;
-            uValue = vector<vector<vector<double>>>(n, vector<vector<double>>(n, vector<double>(7)));
+            uValue = vector<vector<vector<double>>>(n, vector<vector<double>>(n, vector<double>(10)));
             //t = time;
             for (int i = 0; i < n; i++){
                 xValue.push_back(dx * i + dx*0.5);
@@ -61,6 +61,7 @@ class funcValues {
 };
 
 void create(funcValues &func, string fmt){
+    char buff[64];
     fstream fout;
 
     fout.open(fmt + ".csv", ios::out);
@@ -70,9 +71,36 @@ void create(funcValues &func, string fmt){
     for (int i = n; i < func.xValue.size() - n; i++){
         for (int j = n; j < func.yValue.size() - n; j++){
         //cout << i << '\n';
-            fout << func.xValue.at(i) << ", " << func.yValue.at(j) << ", " << func.uValue[i][j][0] << ", " << func.uValue[i][j][1] <<'\n';
+
+            //sprintf_s(buff, "%f,%f,%f,%f\n", func.xValue.at(i), func.yValue.at(j), func.uValue[i][j][0], func.uValue[i][j][1]);
+            //sprintf_s(buff, "%f,%f,%f\n", i-n, j-n, abs(func.uValue[i][j][0] + func.uValue[i][j][1]));
+            fout << abs(func.uValue[i][j][0] + func.uValue[i][j][1]) << ' ';
+            //fout << func.xValue.at(i) << ", " << func.yValue.at(j) << ", " << func.uValue[i][j][0] << ", " << func.uValue[i][j][1] <<'\n';
         }
+        fout << '\n';
     }
+    fout.close();
+}
+
+void createAxes(funcValues &func, string fmt){
+    char buff[64];
+    fstream fout;
+
+    fout.open(fmt + ".csv", ios::out);
+
+    int n = func.gc/2;
+    
+    for (int i = n; i < func.xValue.size() - n; i++){
+        
+        //cout << i << '\n';
+
+            //sprintf_s(buff, "%f,%f,%f,%f\n", func.xValue.at(i), func.yValue.at(j), func.uValue[i][j][0], func.uValue[i][j][1]);
+            sprintf_s(buff, "%f,%f\n", func.xValue.at(i), func.yValue.at(i));
+            fout << buff;
+            //fout << func.xValue.at(i) << ", " << func.yValue.at(j) << ", " << func.uValue[i][j][0] << ", " << func.uValue[i][j][1] <<'\n';
+        
+    }
+    fout.close();
 }
 
 void createFolder(vector<funcValues> &func, string folder){
@@ -84,38 +112,53 @@ void createFolder(vector<funcValues> &func, string folder){
     std::filesystem::create_directory(folder);
     std::filesystem::current_path(folder);
 
-    int count = func.size()/1000;
+    int count = 1;
+    if (func.size()>1000){
+        count = func.size()/1000;
+    }
+
+    int x = func.size();
 
     for (int i = 0; i < func.size(); i+=count){
 
         
 
-        if (i == 0){
+        // if (i == 0){
 
-            s = folder + "_00000";
+        //     s = folder + "_000000";
+        //     s = s + to_string(i);
+        // }
+
+        if (i < 10){
+            s = folder + "_000000";
             s = s + to_string(i);
         }
         
         else if (i < 100){
 
-            s = folder + "_0000";
+            s = folder + "_00000";
             s = s + to_string(i);
         }
 
         else if (i < 1000){
 
-            s = folder + "_000";
+            s = folder + "_0000";
             s = s + to_string(i);
         }
 
         else if (i < 10000){
 
-            s = folder + "_00";
+            s = folder + "_000";
             s = s + to_string(i);
         }
 
         else if (i < 100000){
 
+            s = folder + "_00";
+            s = s + to_string(i);
+        }
+
+        else if (i < 1000000){
             s = folder + "_0";
             s = s + to_string(i);
         }
@@ -148,8 +191,8 @@ void specFunc(funcValues &func, double cfl, double c, double v){
     for (int i = 0; i < func.xValue.size(); i++){
         for (int j = 0; j < func.yValue.size(); j++){
             
-            double x = sin(func.xValue.at(i));
-            double y = cos(func.yValue.at(j));
+            double x = sin(func.xValue.at(i))*sin(func.yValue.at(j)) + 1;
+            double y = 0.1;
             if(uMax < abs(x)){
             uMax = abs(x);
             }
@@ -212,6 +255,9 @@ void d1o2 (funcValues &func){
         for(int j = n; j< func.yValue.size() - n; j++){
             func.uValue[i][j][2] = (-1.0/2.0*func.uValue[i-1][j][0] + 1.0/2.0*func.uValue[i+1][j][0])/(func.dx);
             func.uValue[i][j][3] = (-1.0/2.0*func.uValue[i][j-1][1] + 1.0/2.0*func.uValue[i][j+1][1])/(func.dy);
+            func.uValue[i][j][4] = (-1.0/2.0*func.uValue[i-1][j][0] + 1.0/2.0*func.uValue[i+1][j][0])/(func.dx);
+            func.uValue[i][j][5] = (-1.0/2.0*func.uValue[i][j-1][1] + 1.0/2.0*func.uValue[i][j+1][1])/(func.dy);
+            
 
             //func.uDer.push_back(val);
         }
@@ -223,8 +269,10 @@ void d2o2 (funcValues &func){
     int n = func.gc/2;
     for (int i = n; i < func.xValue.size()-n; i++){
         for(int j = n; j< func.yValue.size() - n; j++){
-            func.uValue[i][j][4] = (-1.0/2.0*func.uValue[i-1][j][2] + 1.0/2.0*func.uValue[i+1][j][2])/(func.dx);
-            func.uValue[i][j][5] = (-1.0/2.0*func.uValue[i][j-1][3] + 1.0/2.0*func.uValue[i][j+1][3])/(func.dy);
+            func.uValue[i][j][6] = (-1.0/2.0*func.uValue[i-1][j][2] + 1.0/2.0*func.uValue[i+1][j][2])/(func.dx);
+            func.uValue[i][j][7] = (-1.0/2.0*func.uValue[i][j-1][3] + 1.0/2.0*func.uValue[i][j+1][3])/(func.dy);
+            func.uValue[i][j][8] = (-1.0/2.0*func.uValue[i-1][j][4] + 1.0/2.0*func.uValue[i+1][j][4])/(func.dx);
+            func.uValue[i][j][9] = (-1.0/2.0*func.uValue[i][j-1][5] + 1.0/2.0*func.uValue[i][j+1][5])/(func.dy);
 
             //func.uDer.push_back(val);
         }
@@ -243,8 +291,8 @@ void nextVecBurger(funcValues &func, funcValues &next, double c, double v, doubl
         int help = func.yValue.size() - n - 1;
         for (int j = n; j < (func.yValue.size() - n -1); j++){
         
-            double x = (func.uValue[i-n][j-n].at(0) - c*func.uValue[i-n][j-n].at(1)*func.uValue[i-n][j-n][2]*func.dt + v*func.uValue[i-n][j-n][4]*func.dt);
-            double y = (func.uValue[i-n][j-n].at(1) - c*func.uValue[i-n][j-n].at(1)*func.uValue[i-n][j-n][3]*func.dt + v*func.uValue[i-n][j-n][5]*func.dt);
+            double x = (func.uValue[i-n][j-n].at(0) - c*func.uValue[i-n][j-n].at(0)*func.uValue[i-n][j-n][2]*func.dt - c*func.uValue[i-n][j-n].at(1)*func.uValue[i-n][j-n][3]*func.dt + v*(func.uValue[i-n][j-n][6]*func.dt - func.uValue[i-n][j-n][7])*func.dt);
+            double y = (func.uValue[i-n][j-n].at(1) - c*func.uValue[i-n][j-n].at(0)*func.uValue[i-n][j-n][4]*func.dt - c*func.uValue[i-n][j-n].at(1)*func.uValue[i-n][j-n][5]*func.dt + v*(func.uValue[i-n][j-n][8]*func.dt - func.uValue[i-n][j-n][9])*func.dt);
             
             if(uMax < abs(x)){
                 uMax = abs(x);
@@ -322,10 +370,10 @@ void ghostNodes(int n, funcValues &func){
         }
         
         vector <vector<double>> xGhost0 = func.uValue[func.uValue.size() - 1 -i];
-        xGhost0[0] = {0,0,0,0,0,0,0};
-        xGhost0[xGhost0.size()-1] = {0,0,0,0,0,0,0};
+        xGhost0[0] = {0,0,0,0,0,0,0,0,0,0};
+        xGhost0[xGhost0.size()-1] = {0,0,0,0,0,0,0,0,0,0};
         vector <vector<double>> xGhost1 = func.uValue[i];
-        xGhost1[0] = {0,0,0,0,0,0,0};
+        xGhost1[0] = {0,0,0,0,0,0,0,0,0,0};
         xGhost1[xGhost1.size()-1] = {0,0,0,0,0,0,0};
         func.uValue.insert(func.uValue.begin(), xGhost0);
 
@@ -359,8 +407,38 @@ void ghostNodes2(int n, funcValues &func){
             func.uValue[j][n/2-i-1][2] = func.uValue[j][func.uValue.size()-1-(n/2-i)][2];
             func.uValue[j][func.uValue.size()-(n/2-i)][2] = func.uValue[j][n/2+i][2];
 
+            func.uValue[j][n/2-i-1][3] = func.uValue[j][func.uValue.size()-1-(n/2-i)][3];
+            func.uValue[j][func.uValue.size()-(n/2-i)][3] = func.uValue[j][n/2+i][3];
+
+            func.uValue[j][n/2-i-1][4] = func.uValue[j][func.uValue.size()-1-(n/2-i)][4];
+            func.uValue[j][func.uValue.size()-(n/2-i)][4] = func.uValue[j][n/2+i][4];
+
+            func.uValue[j][n/2-i-1][5] = func.uValue[j][func.uValue.size()-1-(n/2-i)][5];
+            func.uValue[j][func.uValue.size()-(n/2-i)][5] = func.uValue[j][n/2+i][5];
+
+            // func.uValue[j][n/2-i-1][6] = func.uValue[j][func.uValue.size()-1-(n/2-i)][6];
+            // func.uValue[j][func.uValue.size()-(n/2-i)][6] = func.uValue[j][n/2+i][6];
+
+            // func.uValue[j][n/2-i-1][7] = func.uValue[j][func.uValue.size()-1-(n/2-i)][7];
+            // func.uValue[j][func.uValue.size()-(n/2-i)][7] = func.uValue[j][n/2+i][7];
+
+            func.uValue[n/2-i-1][j][2] = func.uValue[func.uValue.size()-1-(n/2-i)][j][2];
+            func.uValue[func.uValue.size()-(n/2-i)][j][2] = func.uValue[n/2+i][j][2];
+
             func.uValue[n/2-i-1][j][3] = func.uValue[func.uValue.size()-1-(n/2-i)][j][3];
             func.uValue[func.uValue.size()-(n/2-i)][j][3] = func.uValue[n/2+i][j][3];
+
+            func.uValue[n/2-i-1][j][4] = func.uValue[func.uValue.size()-1-(n/2-i)][j][4];
+            func.uValue[func.uValue.size()-(n/2-i)][j][4] = func.uValue[n/2+i][j][4];
+
+            func.uValue[n/2-i-1][j][5] = func.uValue[func.uValue.size()-1-(n/2-i)][j][5];
+            func.uValue[func.uValue.size()-(n/2-i)][j][5] = func.uValue[n/2+i][j][5];
+
+            // func.uValue[n/2-i-1][j][8] = func.uValue[func.uValue.size()-1-(n/2-i)][j][8];
+            // func.uValue[func.uValue.size()-(n/2-i)][j][8] = func.uValue[n/2+i][j][8];
+
+            // func.uValue[n/2-i-1][j][9] = func.uValue[func.uValue.size()-1-(n/2-i)][j][9];
+            // func.uValue[func.uValue.size()-(n/2-i)][j][9] = func.uValue[n/2+i][j][9];
             
         }
         // vector <vector<double>> xGhost0 = func.uValue[func.xValue.size() - i];
@@ -430,6 +508,8 @@ int main(){
     funcValues burgerZero(n, initialx, finalx, initialy, finaly);
     burgerZero.t = 0;
     specFunc(burgerZero, cfl, c, v);
+
+    createAxes(burgerZero, "xy");
     // double uMax = * max_element(burgerZero.uValue.begin(), burgerZero.uValue.end());
     // double uMin = * min_element(burgerZero.uValue.begin(), burgerZero.uValue.end());
 
@@ -465,10 +545,10 @@ int main(){
 
         burger.push_back(burgerNext);
 
-        cout<< i<<'\n';
+        //cout<< i<<'\n';
         
     }
-    cout<< "Made it";
+    //cout<< "Made it";
 
     clock_t here = clock() - start;
 
