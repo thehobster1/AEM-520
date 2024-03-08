@@ -186,28 +186,28 @@ void createFolder(vector<funcValues> &func, string folder){
 //     }
 // };
 
-void specFunc(funcValues &func, double cfl, double c, double v){
+void specFunc(funcValues &func, double cfl, double c, double nu){
     double uMax = 0;
     for (int i = 0; i < func.xValue.size(); i++){
         for (int j = 0; j < func.yValue.size(); j++){
             
-            double x = sin(func.xValue.at(i))*sin(func.yValue.at(j)) + 1;
-            double y = 0.1;
-            if(uMax < abs(x)){
-            uMax = abs(x);
+            double u = sin(func.xValue.at(i))*sin(func.yValue.at(j)) + 1;
+            double v = 0.1;
+            if(uMax < abs(u)){
+            uMax = abs(u);
             }
 
-            if(uMax < abs(y)){
-                uMax = abs(y);
+            if(uMax < abs(v)){
+                uMax = abs(v);
             }
             
-            func.uValue[i][j][0] = x;
-            func.uValue[i][j][1] = y;
+            func.uValue[i][j][0] = u;
+            func.uValue[i][j][1] = v;
         }
     }
     double dta = func.dx*cfl/(c*abs(uMax));
 
-    double dtb = pow(func.dx, 2)/v*cfl;
+    double dtb = pow(func.dx, 2)/nu*cfl;
 
     if (dta < dtb){
         func.dt = dta;
@@ -279,31 +279,37 @@ void d2o2 (funcValues &func){
     }
 }
 
-void nextVecBurger(funcValues &func, funcValues &next, double c, double v, double cfl){
+void nextVecBurger(funcValues &func, funcValues &next, double c, double nu, double cfl){
     
 
     int n = func.gc/2;
 
     double uMax = 0;
 
+    double u;
+    double v;
+
 
     for(int i = n; i < (func.xValue.size()-n-1); i++){
         int help = func.yValue.size() - n - 1;
         for (int j = n; j < (func.yValue.size() - n -1); j++){
         
-            double x = (func.uValue[i-n][j-n].at(0) - c*func.uValue[i-n][j-n].at(0)*func.uValue[i-n][j-n][2]*func.dt - c*func.uValue[i-n][j-n].at(1)*func.uValue[i-n][j-n][3]*func.dt + v*(func.uValue[i-n][j-n][6]*func.dt - func.uValue[i-n][j-n][7])*func.dt);
-            double y = (func.uValue[i-n][j-n].at(1) - c*func.uValue[i-n][j-n].at(0)*func.uValue[i-n][j-n][4]*func.dt - c*func.uValue[i-n][j-n].at(1)*func.uValue[i-n][j-n][5]*func.dt + v*(func.uValue[i-n][j-n][8]*func.dt - func.uValue[i-n][j-n][9])*func.dt);
+            //u = (func.uValue[i-n][j-n].at(0) - c*func.uValue[i-n][j-n].at(0)*func.uValue[i-n][j-n][2]*func.dt - c*func.uValue[i-n][j-n].at(1)*func.uValue[i-n][j-n][3]*func.dt + nu*(func.uValue[i-n][j-n][6]- func.uValue[i-n][j-n][7])*func.dt);
+            //v = (func.uValue[i-n][j-n].at(1) - c*func.uValue[i-n][j-n].at(0)*func.uValue[i-n][j-n][4]*func.dt - c*func.uValue[i-n][j-n].at(1)*func.uValue[i-n][j-n][5]*func.dt + nu*(func.uValue[i-n][j-n][8]- func.uValue[i-n][j-n][9])*func.dt);
             
-            if(uMax < abs(x)){
-                uMax = abs(x);
+            u = (func.uValue[i][j].at(0) - c*func.uValue[i][j].at(0)*func.uValue[i][j][2]*func.dt - c*func.uValue[i][j].at(1)*func.uValue[i][j][3]*func.dt + nu*(func.uValue[i][j][6]- func.uValue[i][j][7])*func.dt);
+            v = (func.uValue[i][j].at(1) - c*func.uValue[i][j].at(0)*func.uValue[i][j][4]*func.dt - c*func.uValue[i][j].at(1)*func.uValue[i][j][5]*func.dt + nu*(func.uValue[i][j][8]- func.uValue[i][j][9])*func.dt);
+            
+            if(uMax < abs(u)){
+                uMax = abs(u);
             }
 
-            if(uMax < abs(y)){
-                uMax = abs(y);
+            if(uMax < abs(v)){
+                uMax = abs(v);
             }
             
-            next.uValue[i-n][j-n][0] = x;
-            next.uValue[i-n][j-n][1] = y;
+            next.uValue[i-n][j-n][0] = u;
+            next.uValue[i-n][j-n][1] = v;
         }
         //cout << i << '\n';
     }
@@ -319,7 +325,7 @@ void nextVecBurger(funcValues &func, funcValues &next, double c, double v, doubl
 
     double dta = next.dx*cfl/(c*abs(uMax));
 
-    double dtb = pow(next.dx, 2)/v;
+    double dtb = pow(next.dx, 2)/nu;
 
     if (dta < dtb){
         next.dt = dta;
@@ -374,7 +380,7 @@ void ghostNodes(int n, funcValues &func){
         xGhost0[xGhost0.size()-1] = {0,0,0,0,0,0,0,0,0,0};
         vector <vector<double>> xGhost1 = func.uValue[i];
         xGhost1[0] = {0,0,0,0,0,0,0,0,0,0};
-        xGhost1[xGhost1.size()-1] = {0,0,0,0,0,0,0};
+        xGhost1[xGhost1.size()-1] = {0,0,0,0,0,0,0,0,0,0};
         func.uValue.insert(func.uValue.begin(), xGhost0);
 
         func.uValue.push_back(xGhost1);
@@ -482,7 +488,7 @@ int main(){
     double cfl;
     
     double c;
-    double v;
+    double nu;
 
 	ifstream input;
 
@@ -494,9 +500,9 @@ int main(){
 
     
 
-    input >> n >> order >> initialx >> finalx >> initialy >> finaly >> cfl >> c >> v;
+    input >> n >> order >> initialx >> finalx >> initialy >> finaly >> cfl >> c >> nu;
 
-    int tNodes = n*4;
+    int tNodes = n*10;
 
     initialx = initialx*M_PI;
     finalx = finalx*M_PI;
@@ -507,7 +513,7 @@ int main(){
 
     funcValues burgerZero(n, initialx, finalx, initialy, finaly);
     burgerZero.t = 0;
-    specFunc(burgerZero, cfl, c, v);
+    specFunc(burgerZero, cfl, c, nu);
 
     createAxes(burgerZero, "xy");
     // double uMax = * max_element(burgerZero.uValue.begin(), burgerZero.uValue.end());
@@ -541,7 +547,7 @@ int main(){
 
         funcValues burgerNext(n, initialx, finalx, initialy, finaly);
 
-        nextVecBurger(burger[i-1], burgerNext, c, v, cfl);
+        nextVecBurger(burger[i-1], burgerNext, c, nu, cfl);
 
         burger.push_back(burgerNext);
 
@@ -554,7 +560,7 @@ int main(){
 
     cout << ((float)here)/CLOCKS_PER_SEC << '\n';
 
-    string str = to_string(v);
+    string str = to_string(nu);
 
     str.erase(str.find_last_not_of('0') + 1, str.length()-1);
     str.erase(str.find_last_not_of('.') + 1, str.length()-1);
