@@ -204,6 +204,81 @@ void createFolder(vector<funcValues> &func, string folder){
     std::filesystem::current_path("..");
 }
 
+
+void createPressureFolder(vector<funcValues> &func, string folder){
+
+    string s;
+
+    //filesystem fs;
+
+    std::filesystem::create_directory(folder);
+    std::filesystem::current_path(folder);
+
+    int count = 1;
+    if (func.size()>500){
+        count = func.size()/500;
+    }
+
+    int x = func.size();
+
+    for (int i = 0; i < func.size(); i+=count){
+
+        
+
+        // if (i == 0){
+
+        //     s = folder + "_000000";
+        //     s = s + to_string(i);
+        // }
+
+        if (i < 10){
+            s = folder + "_000000";
+            s = s + to_string(i);
+        }
+        
+        else if (i < 100){
+
+            s = folder + "_00000";
+            s = s + to_string(i);
+        }
+
+        else if (i < 1000){
+
+            s = folder + "_0000";
+            s = s + to_string(i);
+        }
+
+        else if (i < 10000){
+
+            s = folder + "_000";
+            s = s + to_string(i);
+        }
+
+        else if (i < 100000){
+
+            s = folder + "_00";
+            s = s + to_string(i);
+        }
+
+        else if (i < 1000000){
+            s = folder + "_0";
+            s = s + to_string(i);
+        }
+
+        else {
+            s = folder + "_";
+            s = s + to_string(i);
+        }
+
+
+        createPressure(func[i], s);
+    
+
+    }
+
+    std::filesystem::current_path("..");
+}
+
 void createFolderTime(vector<funcValues> &func, string folder){
 
     string s;
@@ -333,30 +408,7 @@ void d1o2 (funcValues &func){
     }
 }
 
-void solvePoisson (funcValues &func){
-    double err = 1;
-    int n = func.gc/2;
-    int i = 0;
-    
-    double sample;
-    while (err > func.err){
-        i ++;
-        double maxErr = 0;
-        for (int i = n; i < func.xValue.size()-n; i++){
-            for(int j = n; j< func.yValue.size() - n; j++){
-                sample = func.uValue[i][j][11];
-                func.uValue[i][j][11] = (func.dx*func.dx*(func.uValue[i][j+1][11] + func.uValue[i][j-1][11]) + func.dy*func.dy*(func.uValue[i+1][j][11] + func.uValue[i-1][j][11]) - func.dx*func.dx*func.dy*func.dy*func.uValue[i][j][10])/(2.0*(func.dy*func.dy + func.dx*func.dx));
-                
-                if (abs (func.uValue[i][j][11] - sample)/func.uValue[i][j][11] > maxErr) {
-                    maxErr = abs (func.uValue[i][j][11] - sample)/func.uValue[i][j][11];
-                }
-            }
-        }
-        createPressure(func, "Pressure" + to_string(i));
-        err = maxErr;
-        cout << err << '\n';
-    }
-}
+
 
 
 void d2o2 (funcValues &func){
@@ -501,15 +553,9 @@ void ghostNodes2(int n, funcValues &func){
 
         for (int j = 1; j < func.xValue.size() + i - 1; j++){
 
-            // func.uValue[j].insert(func.uValue[j].begin(), func.uValue[j][func.uValue.size() - 1 - i]);
             
-            // func.uValue[j].push_back(func.uValue[j][i+1]);
             int help = func.uValue.size()-1-(n/2-i);
-            // func.uValue[n/2 - i][j][2] = func.uValue[j][func.uValue.size()-1-(n/2-i)][2];
-            // func.uValue[func.uValue.size()-1-(n/2-i)][j][2] = func.uValue[n/2-i][j][2];
-
-            // func.uValue[j][n/2 - i][3] = func.uValue[j][func.uValue.size()-1-(n/2-i)][3];
-            // func.uValue[j][func.uValue.size()-1-(n/2-i)][3] = func.uValue[j][n/2-i][3];
+            
 
             func.uValue[j][n/2-i-1][2] = func.uValue[j][func.uValue.size()-1-(n/2-i)][2];
             func.uValue[j][func.uValue.size()-(n/2-i)][2] = func.uValue[j][n/2+i][2];
@@ -523,11 +569,7 @@ void ghostNodes2(int n, funcValues &func){
             func.uValue[j][n/2-i-1][5] = func.uValue[j][func.uValue.size()-1-(n/2-i)][5];
             func.uValue[j][func.uValue.size()-(n/2-i)][5] = func.uValue[j][n/2+i][5];
 
-            // func.uValue[j][n/2-i-1][6] = func.uValue[j][func.uValue.size()-1-(n/2-i)][6];
-            // func.uValue[j][func.uValue.size()-(n/2-i)][6] = func.uValue[j][n/2+i][6];
-
-            // func.uValue[j][n/2-i-1][7] = func.uValue[j][func.uValue.size()-1-(n/2-i)][7];
-            // func.uValue[j][func.uValue.size()-(n/2-i)][7] = func.uValue[j][n/2+i][7];
+            
 
             func.uValue[n/2-i-1][j][2] = func.uValue[func.uValue.size()-1-(n/2-i)][j][2];
             func.uValue[func.uValue.size()-(n/2-i)][j][2] = func.uValue[n/2+i][j][2];
@@ -541,22 +583,67 @@ void ghostNodes2(int n, funcValues &func){
             func.uValue[n/2-i-1][j][5] = func.uValue[func.uValue.size()-1-(n/2-i)][j][5];
             func.uValue[func.uValue.size()-(n/2-i)][j][5] = func.uValue[n/2+i][j][5];
 
-            // func.uValue[n/2-i-1][j][8] = func.uValue[func.uValue.size()-1-(n/2-i)][j][8];
-            // func.uValue[func.uValue.size()-(n/2-i)][j][8] = func.uValue[n/2+i][j][8];
-
-            // func.uValue[n/2-i-1][j][9] = func.uValue[func.uValue.size()-1-(n/2-i)][j][9];
-            // func.uValue[func.uValue.size()-(n/2-i)][j][9] = func.uValue[n/2+i][j][9];
+            
             
         }
-        // vector <vector<double>> xGhost0 = func.uValue[func.xValue.size() - i];
-        // vector <vector<double>> xGhost1 = func.uValue[i];
-        // func.uValue.insert(func.uValue.begin(), xGhost0);
-
-        // func.uValue.push_back(xGhost1);
+        
 
     }
     
 };
+
+void ghostNodesPressure(funcValues &func){
+    int n = func.gc/2;
+    
+    
+    for (int i = 0; i < n/2; i++){
+
+        for (int j = 1; j < func.xValue.size() + i - 1; j++){
+
+            
+            int help = func.uValue.size()-1-(n/2-i);
+            
+
+            func.uValue[j][n/2-i-1][11] = func.uValue[j][func.uValue.size()-1-(n/2-i)][11];
+            func.uValue[j][func.uValue.size()-(n/2-i)][11] = func.uValue[j][n/2+i][11];
+            
+            func.uValue[n/2-i-1][j][11] = func.uValue[func.uValue.size()-1-(n/2-i)][j][11];
+            func.uValue[func.uValue.size()-(n/2-i)][j][11] = func.uValue[n/2+i][j][11];
+        }
+        
+
+    }
+    
+};
+
+void solvePoisson (funcValues &func){
+    double err = 1;
+    int n = func.gc/2;
+    
+
+    ghostNodesPressure(func);
+    
+    double sample;
+    while (err > func.err){
+        
+        double maxErr = 0;
+        for (int i = n; i < func.xValue.size()-n; i++){
+            for(int j = n; j< func.yValue.size() - n; j++){
+                sample = func.uValue[i][j][11];
+                func.uValue[i][j][11] = (func.dx*func.dx*(func.uValue[i][j+1][11] + func.uValue[i][j-1][11]) + func.dy*func.dy*(func.uValue[i+1][j][11] + func.uValue[i-1][j][11]) - func.dx*func.dx*func.dy*func.dy*func.uValue[i][j][10])/(2.0*(func.dy*func.dy + func.dx*func.dx));
+                
+                if (abs (func.uValue[i][j][11] - sample)/func.uValue[i][j][11] > maxErr) {
+                    maxErr = abs (func.uValue[i][j][11] - sample)/func.uValue[i][j][11];
+                }
+            }
+        }
+        
+        err = maxErr;
+        //cout << err << '\n';
+    }
+    //createPressure(func, "Pressure" + to_string(func.t));
+
+}
 
 void getDer(int n, funcValues &func){
     ghostNodes(n, func);
@@ -606,8 +693,8 @@ int main(){
 
     input >> n >> order >> initialx >> finalx >> initialy >> finaly >> cfl >> c >> nu >> rho >> err;
 
-    //int tNodes = n*18;
-    int tNodes = 1;
+    int tNodes = n*2;
+    //int tNodes = 1;
 
     initialx = initialx*M_PI;
     finalx = finalx*M_PI;
@@ -675,6 +762,8 @@ int main(){
 
 
     createFolderTime(burger, "2DburgerTime" + str);
+
+    createPressureFolder(burger, "Pressure" + str);
 
     start = clock()-start;
 
